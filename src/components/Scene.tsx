@@ -61,21 +61,21 @@ export default Scene;
 const Box: FC = () => (
   <mesh receiveShadow castShadow position={[-14, 0, 0]}>
     <boxGeometry args={[4, 4, 4]} />
-    <MeshTransmissionMaterial backside backsideThickness={5} thickness={1} />
+    <MeshTransmissionMaterial thickness={1} />
   </mesh>
 );
 
 const Torus: FC = () => (
   <mesh receiveShadow castShadow position={[-6, 0, 0]}>
     <torusGeometry args={[4, 1.2, 128, 64]} />
-    <MeshTransmissionMaterial backside backsideThickness={1} thickness={1} />
+    <MeshTransmissionMaterial thickness={1} />
   </mesh>
 );
 
 const Knot: FC = () => (
   <mesh receiveShadow castShadow position={[6, 0, 0]}>
     <torusKnotGeometry args={[3, 1, 256, 32]} />
-    <MeshTransmissionMaterial backside backsideThickness={5} thickness={2} />
+    <MeshTransmissionMaterial thickness={2} />
   </mesh>
 );
 
