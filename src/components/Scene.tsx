@@ -1,114 +1,95 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import {
-  Box,
+  Lightformer,
+  Text,
+  Html,
+  ContactShadows,
   Environment,
+  MeshTransmissionMaterial,
   OrbitControls,
   PerspectiveCamera,
-  Plane,
 } from "@react-three/drei";
-import { useRef, type FC } from "react";
-import { Color, MeshLambertMaterial, ShaderMaterial } from "three";
-import CustomShaderMaterial from "three-custom-shader-material";
+import {
+  Bloom,
+  EffectComposer,
+  N8AO,
+  TiltShift2,
+} from "@react-three/postprocessing";
 
-// @ts-expect-error
-import fragmentShader from "./glass.frag"; // @ts-expect-error
-import vertexShader from "./glass.vert";
+import { type FC } from "react";
 
-type UniformValues = {
-  update: () => void;
-  uTime: {
-    value: number;
-  };
-  uRotateAngle: {
-    value: number;
-  };
-  uColour: {
-    value: Color;
-  };
-  uActiveColour: {
-    value: Color;
-  };
-  uActiveProgress: {
-    value: number;
-  };
-  uRadius: {
-    value: number;
-  };
-  uTube: {
-    value: number;
-  };
-};
+const Scene = () => (
+  <Canvas shadows>
+    <OrbitControls />
+    <PerspectiveCamera makeDefault position={[0, 0, 60]} fov={50} />
 
-const Scene: FC = () => {
-  return (
-    <>
-      <div className="size-full">
-        <Canvas
-          shadows
-          gl={{ antialias: true }}
-          onCreated={({ gl }) => {
-            gl.setClearColor("#000000");
-          }}
-        >
-          <axesHelper />
-          <OrbitControls />
-          <PerspectiveCamera makeDefault position={[3, 3, 8]} />
+    <color attach="background" args={["#e0e0e0"]} />
+    <spotLight position={[20, 20, 10]} penumbra={1} castShadow angle={0.2} />
 
-          <ambientLight intensity={2.2} />
-          <directionalLight position={[3, 3, 8]} intensity={5.75} castShadow />
+    <Box />
+    <Knot />
+    <Torus />
 
-          <Plane
-            position={[0, -5, 0]}
-            args={[64, 64, 1, 1]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            receiveShadow
-          >
-            <meshStandardMaterial color="beige" side={2} />
-          </Plane>
+    <ContactShadows
+      scale={100}
+      position={[0, -7.5, 0]}
+      blur={1}
+      far={100}
+      opacity={0.85}
+    />
+    <Environment preset="city">
+      <Lightformer
+        intensity={8}
+        position={[10, 5, 0]}
+        scale={[10, 50, 1]}
+        onUpdate={(self) => self.lookAt(0, 0, 0)}
+      />
+    </Environment>
 
-          <GlassBox />
+    <Label />
 
-          <Box position={[3, 1, 0]} castShadow>
-            <meshPhysicalMaterial
-              color="lightblue"
-              side={2}
-              thickness={0.1}
-              metalness={0}
-              roughness={0.15}
-              transmission={0.95}
-            />
-          </Box>
-
-          <Environment files="/environment.jpg" background={false} />
-        </Canvas>
-      </div>
-    </>
-  );
-};
+    <EffectComposer enableNormalPass={true} stencilBuffer>
+      <N8AO aoRadius={0.05} intensity={0.5} />
+      <Bloom mipmapBlur luminanceThreshold={10} intensity={10} levels={5} />
+      <TiltShift2 blur={0.12} />
+    </EffectComposer>
+  </Canvas>
+);
 
 export default Scene;
 
-const GlassBox: FC = () => {
-  const shaderMaterial = useRef<ShaderMaterial & UniformValues>(null);
+const Box: FC = () => (
+  <mesh receiveShadow castShadow position={[-14, 0, 0]}>
+    <boxGeometry args={[4, 4, 4]} />
+    <MeshTransmissionMaterial backside backsideThickness={5} thickness={1} />
+  </mesh>
+);
 
-  useFrame(({ clock }) => {
-    if (!shaderMaterial.current) return;
-    shaderMaterial.current.uniforms.uTime.value = clock.getElapsedTime();
-  });
+const Torus: FC = () => (
+  <mesh receiveShadow castShadow position={[-6, 0, 0]}>
+    <torusGeometry args={[4, 1.2, 128, 64]} />
+    <MeshTransmissionMaterial backside backsideThickness={1} thickness={1} />
+  </mesh>
+);
 
+const Knot: FC = () => (
+  <mesh receiveShadow castShadow position={[6, 0, 0]}>
+    <torusKnotGeometry args={[3, 1, 256, 32]} />
+    <MeshTransmissionMaterial backside backsideThickness={5} thickness={2} />
+  </mesh>
+);
+
+const Label: FC = (props) => {
+  const text = "crystal clear";
   return (
-    <Box position={[0, 1, 0]} castShadow>
-      <meshPhysicalMaterial
-        transmission={1} // Full glass effect
-        thickness={0.5} // Control light attenuation
-        roughness={0.1} // Slight blur for frosted look
-        ior={1.52} // Index of Refraction for glass
-        attenuationColor={"#e4fbfa"} // Light tint
-        attenuationDistance={0.15} // How far light travels in glass
-        metalness={0} // No metallic effect
-        clearcoat={1} // High polish
-        clearcoatRoughness={0} // No roughness
-      />
-    </Box>
+    <Text fontSize={9} letterSpacing={-0.025} color="black" {...props}>
+      {text}
+      <Html
+        style={{ color: "transparent", fontSize: "33.5em", userSelect: "none" }}
+        transform
+      >
+        {text}
+      </Html>
+    </Text>
   );
 };
