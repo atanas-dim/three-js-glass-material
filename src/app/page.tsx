@@ -4,7 +4,7 @@ import Scene from "@/components/Scene";
 
 export default function Home() {
   return (
-    <main className="p-8 h-screen w-screen bg-black">
+    <main className="p-8 h-svh w-screen bg-black">
       <Scene />
     </main>
   );

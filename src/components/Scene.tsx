@@ -1,4 +1,4 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, extend, useFrame } from "@react-three/fiber";
 import {
   Lightformer,
   Text,
@@ -8,6 +8,8 @@ import {
   MeshTransmissionMaterial,
   OrbitControls,
   PerspectiveCamera,
+  Line,
+  Sphere,
 } from "@react-three/drei";
 import {
   Bloom,
@@ -16,18 +18,19 @@ import {
   TiltShift2,
 } from "@react-three/postprocessing";
 
-import { type FC } from "react";
+import { useMemo, useRef, type FC } from "react";
+import { Color, Mesh, Vector3 } from "three";
 
 const Scene = () => (
   <Canvas shadows>
     <OrbitControls />
-    <PerspectiveCamera makeDefault position={[0, 0, 60]} fov={50} />
+    <PerspectiveCamera makeDefault position={[0, 0, 30]} fov={50} />
 
-    <color attach="background" args={["#e0e0e0"]} />
+    <color attach="background" args={["#000000"]} />
     <spotLight position={[20, 20, 10]} penumbra={1} castShadow angle={0.2} />
 
-    <Box />
-    <Knot />
+    {/* <Box /> */}
+    {/* <Knot /> */}
     <Torus />
 
     <ContactShadows
@@ -65,12 +68,56 @@ const Box: FC = () => (
   </mesh>
 );
 
-const Torus: FC = () => (
-  <mesh receiveShadow castShadow position={[-6, 0, 0]}>
-    <torusGeometry args={[4, 1.2, 128, 64]} />
-    <MeshTransmissionMaterial thickness={1} />
-  </mesh>
-);
+const Torus: FC = () => {
+  const ref = useRef<Mesh>(null);
+  const ref2 = useRef<Mesh>(null);
+  const radius = 4; // Circular path radius
+
+  useFrame(({ clock }) => {
+    if (ref.current) {
+      const t = clock.getElapsedTime(); // Get time
+      ref.current.position.x = Math.cos(t) * radius;
+      ref.current.position.y = Math.sin(t) * radius;
+
+      if (ref2.current) {
+        const t = clock.getElapsedTime() * 0.7; // Get time
+        ref2.current.position.x = Math.cos(t) * radius;
+        ref2.current.position.y = Math.sin(t) * radius; // Same position as ref
+      }
+    }
+  });
+
+  return (
+    <group position={[0, 0, 0]}>
+      <mesh receiveShadow castShadow>
+        <torusGeometry args={[4, 1.2, 128, 64]} />
+        <MeshTransmissionMaterial thickness={1} />
+      </mesh>
+      <mesh>
+        <torusGeometry args={[4, 0.012, 128, 64]} />
+        <MeshTransmissionMaterial
+          thickness={0.5}
+          emissive="#ffe5b5"
+          emissiveIntensity={6}
+        />
+      </mesh>
+      <Sphere position={[4, 0, 0]} args={[0.12]} scale={[1, 1, 1]} ref={ref}>
+        <MeshTransmissionMaterial
+          thickness={0.01}
+          emissive="hotpink"
+          emissiveIntensity={22}
+        />
+      </Sphere>
+      <Sphere position={[4, 0, 0]} args={[0.05]} scale={[1, 1, 1]} ref={ref2}>
+        <MeshTransmissionMaterial
+          thickness={0.01}
+          emissive="pink"
+          emissiveIntensity={8}
+        />
+      </Sphere>
+    </group>
+  );
+};
 
 const Knot: FC = () => (
   <mesh receiveShadow castShadow position={[6, 0, 0]}>
@@ -80,9 +127,15 @@ const Knot: FC = () => (
 );
 
 const Label: FC = (props) => {
-  const text = "crystal clear";
+  const text = "crystal";
   return (
-    <Text fontSize={9} letterSpacing={-0.025} color="black" {...props}>
+    <Text
+      position={new Vector3(0, 0, -26)}
+      fontSize={9}
+      letterSpacing={-0.025}
+      color="white"
+      {...props}
+    >
       {text}
       <Html
         style={{ color: "transparent", fontSize: "33.5em", userSelect: "none" }}
