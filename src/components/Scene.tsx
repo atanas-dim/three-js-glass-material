@@ -43,7 +43,11 @@ const Scene = () => (
       far={100}
       opacity={0.85}
     /> */}
-    <Environment preset="city">
+    <Environment
+      preset="studio"
+      environmentIntensity={0.15}
+      environmentRotation={[0, 0, 0]}
+    >
       <Lightformer
         intensity={8}
         position={[10, 5, 0]}
@@ -95,16 +99,24 @@ const Torus: FC = () => {
       <mesh receiveShadow castShadow>
         <torusGeometry args={[4, 1.2, 32, 64]} />
         <MeshTransmissionMaterial
-          thickness={0.2}
+          thickness={1}
           resolution={window.innerWidth * 2}
+          color={"#98d9e8"}
+          // backside
+          backsideThickness={0.01}
+          // transmission={0.98}
         />
       </mesh>
       <mesh>
         <torusGeometry args={[4, 0.015, 32, 64]} />
-        <MeshTransmissionMaterial thickness={0.01} color="#ffcd38" />
+        <MeshTransmissionMaterial
+          thickness={0.01}
+          color="#e9fcff"
+          // color="#ffa7d3"
+        />
       </mesh>
       <Sphere position={[4, 0, 0]} args={[0.1]} scale={[1, 1, 1]} ref={ref1}>
-        <meshStandardMaterial emissive="hotpink" emissiveIntensity={48} />
+        <meshStandardMaterial emissive="#ff82d1" emissiveIntensity={48} />
       </Sphere>
       <Sphere position={[4, 0, 0]} args={[0.05]} scale={[1, 1, 1]} ref={ref2}>
         <meshStandardMaterial emissive="pink" emissiveIntensity={38} />
@@ -117,7 +129,7 @@ const Torus: FC = () => {
 };
 
 const Label: FC = (props) => {
-  const text = "crystal";
+  const text = "transmission";
   return (
     <Text
       position={new Vector3(0, 0, -26)}
