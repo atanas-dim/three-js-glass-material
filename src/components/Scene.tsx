@@ -13,6 +13,7 @@ import {
   Shape,
   Octahedron,
   Tetrahedron,
+  Cone,
 } from "@react-three/drei";
 import {
   Bloom,
@@ -35,18 +36,12 @@ const Scene = () => (
     <spotLight position={[20, 20, 10]} penumbra={1} castShadow angle={0.2} />
 
     <Torus />
+    <Pyramid />
 
-    {/* <ContactShadows
-      scale={100}
-      position={[0, -7.5, 0]}
-      blur={1}
-      far={100}
-      opacity={0.85}
-    /> */}
     <Environment
       preset="studio"
       environmentIntensity={0.15}
-      environmentRotation={[0, 0, 0]}
+      // environmentRotation={[-2, 1, 3]}
     >
       <Lightformer
         intensity={8}
@@ -101,10 +96,13 @@ const Torus: FC = () => {
         <MeshTransmissionMaterial
           thickness={1}
           resolution={window.innerWidth * 2}
-          color={"#98d9e8"}
+          color={"#d7f0f9"}
           // backside
           backsideThickness={0.01}
           // transmission={0.98}
+          // metalness={0.11}
+          roughness={0.12}
+          chromaticAberration={0.25}
         />
       </mesh>
       <mesh>
@@ -113,6 +111,7 @@ const Torus: FC = () => {
           thickness={0.01}
           color="#e9fcff"
           // color="#ffa7d3"
+          resolution={window.innerWidth * 2}
         />
       </mesh>
       <Sphere position={[4, 0, 0]} args={[0.1]} scale={[1, 1, 1]} ref={ref1}>
@@ -125,6 +124,32 @@ const Torus: FC = () => {
         <meshStandardMaterial emissive="#cd7dff" emissiveIntensity={33} />
       </Sphere>
     </group>
+  );
+};
+
+const Pyramid: FC = () => {
+  const ref = useRef<Mesh>(null);
+
+  useFrame(({ clock }) => {
+    if (ref.current) {
+      const t = clock.getElapsedTime();
+
+      //rotate 360 degrees every 2 seconds
+      ref.current.rotation.y += 0.015;
+    }
+  });
+
+  return (
+    <>
+      <Cone ref={ref} args={[1.5, 2, 4]} position={[0, 0, 0]}>
+        <MeshTransmissionMaterial
+          thickness={1.25}
+          color="#f7b4ff"
+          // transmission={0.98}
+          chromaticAberration={0.25}
+        />
+      </Cone>
+    </>
   );
 };
 
