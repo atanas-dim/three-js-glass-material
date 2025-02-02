@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Lightformer,
   Text,
@@ -17,16 +17,17 @@ import {
 import {
   Bloom,
   EffectComposer,
+  FXAA,
   N8AO,
   Noise,
   TiltShift2,
 } from "@react-three/postprocessing";
 
-import { useRef, type FC } from "react";
+import { useEffect, useRef, type FC } from "react";
 import { Mesh, Vector3 } from "three";
 
 const Scene = () => (
-  <Canvas shadows>
+  <Canvas dpr={3} gl={{ antialias: true }}>
     <OrbitControls />
     <PerspectiveCamera makeDefault position={[0, 0, 30]} fov={50} />
 
@@ -58,6 +59,7 @@ const Scene = () => (
       <Bloom mipmapBlur luminanceThreshold={10} intensity={4} levels={8} />
       <TiltShift2 blur={0.12} />
       {/* <Noise opacity={0.05} /> */}
+      <FXAA />
     </EffectComposer>
   </Canvas>
 );
@@ -92,11 +94,15 @@ const Torus: FC = () => {
     <group position={[0, 0, 0]}>
       <mesh receiveShadow castShadow>
         <torusGeometry args={[4, 1.2, 64, 128]} />
-        <MeshTransmissionMaterial thickness={1} />
+        <MeshTransmissionMaterial thickness={0.2} resolution={1024 * 3} />
       </mesh>
       <mesh>
-        <torusGeometry args={[4, 0.01, 164, 128]} />
-        <MeshTransmissionMaterial thickness={0.01} color="#ffcd38" />
+        <torusGeometry args={[4, 0.015, 64, 128]} />
+        <MeshTransmissionMaterial
+          thickness={0.01}
+          color="#ffcd38"
+          resolution={1024 * 2}
+        />
       </mesh>
       <Sphere position={[4, 0, 0]} args={[0.1]} scale={[1, 1, 1]} ref={ref1}>
         <MeshTransmissionMaterial
