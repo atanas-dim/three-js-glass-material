@@ -27,7 +27,7 @@ import { useEffect, useRef, type FC } from "react";
 import { Mesh, Vector3 } from "three";
 
 const Scene = () => (
-  <Canvas dpr={3} gl={{ antialias: true }}>
+  <Canvas dpr={[2, 3]} gl={{}} shadows={false}>
     <OrbitControls />
     <PerspectiveCamera makeDefault position={[0, 0, 30]} fov={50} />
 
@@ -36,13 +36,13 @@ const Scene = () => (
 
     <Torus />
 
-    <ContactShadows
+    {/* <ContactShadows
       scale={100}
       position={[0, -7.5, 0]}
       blur={1}
       far={100}
       opacity={0.85}
-    />
+    /> */}
     <Environment preset="city">
       <Lightformer
         intensity={8}
@@ -55,7 +55,7 @@ const Scene = () => (
     <Label />
 
     <EffectComposer enableNormalPass={true} stencilBuffer>
-      <N8AO aoRadius={0.05} intensity={0.5} />
+      {/* <N8AO aoRadius={0.05} intensity={0.5} /> */}
       <Bloom mipmapBlur luminanceThreshold={10} intensity={4} levels={8} />
       <TiltShift2 blur={0.12} />
       {/* <Noise opacity={0.05} /> */}
@@ -93,37 +93,24 @@ const Torus: FC = () => {
   return (
     <group position={[0, 0, 0]}>
       <mesh receiveShadow castShadow>
-        <torusGeometry args={[4, 1.2, 64, 128]} />
-        <MeshTransmissionMaterial thickness={0.2} resolution={1024 * 3} />
+        <torusGeometry args={[4, 1.2, 32, 64]} />
+        <MeshTransmissionMaterial
+          thickness={0.2}
+          resolution={window.innerWidth * 2}
+        />
       </mesh>
       <mesh>
-        <torusGeometry args={[4, 0.015, 64, 128]} />
-        <MeshTransmissionMaterial
-          thickness={0.01}
-          color="#ffcd38"
-          resolution={1024 * 2}
-        />
+        <torusGeometry args={[4, 0.015, 32, 64]} />
+        <MeshTransmissionMaterial thickness={0.01} color="#ffcd38" />
       </mesh>
       <Sphere position={[4, 0, 0]} args={[0.1]} scale={[1, 1, 1]} ref={ref1}>
-        <MeshTransmissionMaterial
-          thickness={1}
-          emissive="hotpink"
-          emissiveIntensity={48}
-        />
+        <meshStandardMaterial emissive="hotpink" emissiveIntensity={48} />
       </Sphere>
       <Sphere position={[4, 0, 0]} args={[0.05]} scale={[1, 1, 1]} ref={ref2}>
-        <MeshTransmissionMaterial
-          thickness={1}
-          emissive="pink"
-          emissiveIntensity={38}
-        />
+        <meshStandardMaterial emissive="pink" emissiveIntensity={38} />
       </Sphere>
       <Sphere position={[4, 0, 0]} args={[0.025]} scale={[1, 1, 1]} ref={ref3}>
-        <MeshTransmissionMaterial
-          thickness={1}
-          emissive="#cd7dff"
-          emissiveIntensity={33}
-        />
+        <meshStandardMaterial emissive="#cd7dff" emissiveIntensity={33} />
       </Sphere>
     </group>
   );
