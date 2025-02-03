@@ -14,6 +14,7 @@ import {
   Octahedron,
   Tetrahedron,
   Cone,
+  Shadow,
 } from "@react-three/drei";
 import {
   Bloom,
@@ -32,26 +33,23 @@ const Scene = () => (
     <OrbitControls />
     <PerspectiveCamera makeDefault position={[0, 0, 30]} fov={50} />
 
-    <color attach="background" args={["#000000"]} />
+    <color attach="background" args={["#252e3c"]} />
     <spotLight position={[20, 20, 10]} penumbra={1} castShadow angle={0.2} />
 
     <Torus />
-    <Pyramid />
+    {/* <Pyramid /> */}
 
-    <Environment
-      preset="studio"
-      environmentIntensity={0.15}
-      // environmentRotation={[-2, 1, 3]}
-    >
-      <Lightformer
-        intensity={8}
-        position={[10, 5, 0]}
-        scale={[10, 50, 1]}
-        onUpdate={(self) => self.lookAt(0, 0, 0)}
-      />
-    </Environment>
+    <ContactShadows
+      scale={100}
+      position={[0, -7.5, 0]}
+      blur={1}
+      far={100}
+      opacity={0.85}
+    />
 
     <Label />
+
+    <SceneEnvironment />
 
     <EffectComposer enableNormalPass={true} stencilBuffer>
       {/* <N8AO aoRadius={0.05} intensity={0.5} /> */}
@@ -64,6 +62,26 @@ const Scene = () => (
 );
 
 export default Scene;
+
+const SceneEnvironment = () => {
+  return (
+    <Environment
+      // preset="studio"
+      environmentIntensity={2.75}
+      // environmentRotation={[-2, 1, 3]}
+      files={"/ml_gradient_freebie_02.hdr"}
+      // background
+      // backgroundBlurriness={2}
+    >
+      <Lightformer
+        intensity={8}
+        position={[7, 5, 2]}
+        scale={[4, 7, 1]}
+        // onUpdate={(self) => self.lookAt(0, 0, 0)}
+      />
+    </Environment>
+  );
+};
 
 const Torus: FC = () => {
   const ref1 = useRef<Mesh>(null);
@@ -101,7 +119,7 @@ const Torus: FC = () => {
           backsideThickness={0.01}
           // transmission={0.98}
           // metalness={0.11}
-          roughness={0.12}
+          // roughness={0.12}
           chromaticAberration={0.25}
         />
       </mesh>
@@ -143,9 +161,14 @@ const Pyramid: FC = () => {
     <>
       <Cone ref={ref} args={[1.5, 2, 4]} position={[0, 0, 0]}>
         <MeshTransmissionMaterial
-          thickness={1.25}
-          color="#f7b4ff"
+          thickness={1}
+          resolution={window.innerWidth * 2}
+          color={"#d7f0f9"}
+          // backside
+          backsideThickness={0.01}
           // transmission={0.98}
+          // metalness={0.11}
+          // roughness={0.12}
           chromaticAberration={0.25}
         />
       </Cone>
@@ -160,7 +183,7 @@ const Label: FC = (props) => {
       position={new Vector3(0, 0, -26)}
       fontSize={9}
       letterSpacing={-0.025}
-      color="white"
+      color="#e1f1fb"
       {...props}
     >
       {text}
