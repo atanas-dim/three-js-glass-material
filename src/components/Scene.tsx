@@ -37,6 +37,7 @@ const Scene = () => (
     <spotLight position={[20, 20, 10]} penumbra={1} castShadow angle={0.2} />
 
     <Torus />
+    {/* <Bubble /> */}
     {/* <Pyramid /> */}
 
     <ContactShadows
@@ -65,21 +66,35 @@ export default Scene;
 
 const SceneEnvironment = () => {
   return (
-    <Environment
-      // preset="studio"
-      environmentIntensity={2.75}
-      // environmentRotation={[-2, 1, 3]}
-      files={"/ml_gradient_freebie_02.hdr"}
-      // background
-      // backgroundBlurriness={2}
-    >
-      <Lightformer
-        intensity={8}
-        position={[7, 5, 2]}
-        scale={[4, 7, 1]}
-        // onUpdate={(self) => self.lookAt(0, 0, 0)}
+    <>
+      <Environment
+        // preset="studio"
+        environmentIntensity={2.75}
+        // environmentRotation={[-2, 1, 3]}
+        files={"/ml_gradient_freebie_02.hdr"}
+        // background
+        // backgroundBlurriness={2}
+      >
+        <Lightformer
+          intensity={8}
+          position={[7, 5, 2]}
+          scale={[4, 7, 1]}
+          // onUpdate={(self) => self.lookAt(0, 0, 0)}
+        />
+      </Environment>
+    </>
+  );
+};
+
+const Bubble = () => {
+  return (
+    <Sphere args={[1, 32, 32]} position={new Vector3(0, 0, 0)}>
+      <MeshTransmissionMaterial
+        thickness={0}
+        resolution={window.innerWidth * 2}
+        color={"#ffffff"}
       />
-    </Environment>
+    </Sphere>
   );
 };
 
