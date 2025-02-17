@@ -1,4 +1,4 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import {
   Lightformer,
   Text,
@@ -9,24 +9,25 @@ import {
   OrbitControls,
   PerspectiveCamera,
   Sphere,
-  Icosahedron,
-  Shape,
-  Octahedron,
-  Tetrahedron,
   Cone,
-  Shadow,
+  useTexture,
 } from "@react-three/drei";
 import {
   Bloom,
   EffectComposer,
   FXAA,
-  N8AO,
-  Noise,
   TiltShift2,
 } from "@react-three/postprocessing";
+import { RGBELoader } from "three-stdlib";
 
 import { useEffect, useRef, type FC } from "react";
-import { Mesh, Vector3 } from "three";
+import {
+  EquirectangularReflectionMapping,
+  Euler,
+  Mesh,
+  TextureLoader,
+  Vector3,
+} from "three";
 
 const Scene = () => (
   <Canvas dpr={[2, 3]} gl={{}} shadows={false}>
@@ -53,10 +54,8 @@ const Scene = () => (
     <SceneEnvironment />
 
     <EffectComposer enableNormalPass={true} stencilBuffer>
-      {/* <N8AO aoRadius={0.05} intensity={0.5} /> */}
       <Bloom mipmapBlur luminanceThreshold={10} intensity={4} levels={8} />
       <TiltShift2 blur={0.12} />
-      {/* <Noise opacity={0.05} /> */}
       <FXAA />
     </EffectComposer>
   </Canvas>
@@ -68,19 +67,11 @@ const SceneEnvironment = () => {
   return (
     <>
       <Environment
-        // preset="studio"
         environmentIntensity={2.75}
-        // environmentRotation={[-2, 1, 3]}
-        files={"/ml_gradient_freebie_02.hdr"}
+        preset="studio"
         // background
-        // backgroundBlurriness={2}
       >
-        <Lightformer
-          intensity={8}
-          position={[7, 5, 2]}
-          scale={[4, 7, 1]}
-          // onUpdate={(self) => self.lookAt(0, 0, 0)}
-        />
+        <Lightformer intensity={8} position={[7, 5, 2]} scale={[4, 7, 1]} />
       </Environment>
     </>
   );
@@ -103,6 +94,15 @@ const Torus: FC = () => {
   const ref2 = useRef<Mesh>(null);
   const ref3 = useRef<Mesh>(null);
   const radius = 4; // Circular path radius
+
+  const envMap = useLoader(TextureLoader, "/gradients-seamless-1.jpg");
+
+  // Ensure correct environment map encoding
+  useEffect(() => {
+    if (envMap) {
+      envMap.mapping = EquirectangularReflectionMapping; // Important for reflections
+    }
+  }, [envMap]);
 
   useFrame(({ clock }) => {
     if (ref1.current) {
@@ -130,12 +130,10 @@ const Torus: FC = () => {
           thickness={1}
           resolution={window.innerWidth * 2}
           color={"#d7f0f9"}
-          // backside
-          backsideThickness={0.01}
-          // transmission={0.98}
-          // metalness={0.11}
-          // roughness={0.12}
           chromaticAberration={0.25}
+          envMap={envMap}
+          envMapIntensity={2}
+          envMapRotation={new Euler(1, 0, 0)}
         />
       </mesh>
       <mesh>
