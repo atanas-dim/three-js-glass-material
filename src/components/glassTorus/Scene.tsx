@@ -28,7 +28,7 @@ import {
 
 const RADIUS = 4;
 
-const Scene = () => (
+const GlassTorusScene = () => (
   <Canvas dpr={[2, 3]} gl={{}} shadows={false}>
     <OrbitControls />
     <PerspectiveCamera makeDefault position={[0, 0, 30]} fov={50} />
@@ -58,7 +58,7 @@ const Scene = () => (
   </Canvas>
 );
 
-export default Scene;
+export default GlassTorusScene;
 
 const SceneEnvironment = () => {
   return (
