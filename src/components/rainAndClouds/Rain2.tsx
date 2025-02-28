@@ -1,20 +1,16 @@
-import { CylinderGeometry, MeshLambertMaterial } from "three";
-
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import * as THREE from "three";
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useThree } from "@react-three/fiber";
 
 export const Effects = () => (
   <EffectComposer>
-    <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.5} intensity={1.2} />
+    <Bloom luminanceThreshold={0.02} luminanceSmoothing={0.5} intensity={1.5} />
   </EffectComposer>
 );
 
 const Rain2 = () => {
-  const { viewport } = useThree();
   const rainCount = 5000;
   const rainCubeSize = 15; // X size of the rain box
 
