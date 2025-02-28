@@ -1,8 +1,8 @@
 import { OrbitControls, PerspectiveCamera, Plane } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { type FC } from "react";
-import Rain from "./Rain";
 import Rain2, { Effects } from "./Rain2";
+import Clouds from "./Clouds";
 
 const RainAndCloudsScene: FC = () => {
   return (
@@ -17,6 +17,7 @@ const RainAndCloudsScene: FC = () => {
         <meshStandardMaterial color="grey" />
       </Plane>
 
+      <Clouds />
       <Rain2 />
 
       <Effects />
