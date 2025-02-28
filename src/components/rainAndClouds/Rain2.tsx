@@ -1,7 +1,7 @@
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 import * as THREE from "three";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, FC } from "react";
 import { useFrame } from "@react-three/fiber";
 
 export const Effects = () => (
@@ -10,18 +10,17 @@ export const Effects = () => (
   </EffectComposer>
 );
 
-const Rain2 = () => {
-  const rainCount = 5000;
-  const rainCubeSize = 12; // X size of the rain box
+const RAIN_CUBE_SIZE = 12; // X size of the rain box
 
+const Rain2: FC<{ rainCount: number }> = ({ rainCount = 5000 }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null!);
 
   const positions = useMemo(() => {
     const pos = new Float32Array(rainCount * 3);
     for (let i = 0; i < rainCount; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * rainCubeSize; // X
-      pos[i * 3 + 1] = Math.random() * rainCubeSize; // Y (above ground)
-      pos[i * 3 + 2] = (Math.random() - 0.5) * rainCubeSize; // Z
+      pos[i * 3] = (Math.random() - 0.5) * RAIN_CUBE_SIZE; // X
+      pos[i * 3 + 1] = Math.random() * RAIN_CUBE_SIZE; // Y (above ground)
+      pos[i * 3 + 2] = (Math.random() - 0.5) * RAIN_CUBE_SIZE; // Z
     }
     return pos;
   }, [rainCount]);
@@ -43,7 +42,7 @@ const Rain2 = () => {
 
       if (position.y < 0) {
         // Reset to top
-        position.y = rainCubeSize;
+        position.y = RAIN_CUBE_SIZE;
       }
 
       // Optional: Add wind tilt (drift X over time)

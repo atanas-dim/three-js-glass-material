@@ -1,10 +1,18 @@
-import { OrbitControls, PerspectiveCamera, Plane } from "@react-three/drei";
+import {
+  OrbitControls,
+  PerspectiveCamera,
+  Plane,
+  PerformanceMonitor,
+} from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { type FC } from "react";
+import { useState, type FC } from "react";
 import Rain2, { Effects } from "./Rain2";
 import Clouds from "./Clouds";
+import { Perf } from "r3f-perf";
 
 const RainAndCloudsScene: FC = () => {
+  const [rainCount, setRainCount] = useState(4000);
+
   return (
     <Canvas dpr={[2, 3]} gl={{}} shadows={false}>
       <OrbitControls target={[0, 8, 0]} enableZoom={true} />
@@ -16,8 +24,13 @@ const RainAndCloudsScene: FC = () => {
         <meshStandardMaterial color="lightgrey" roughness={1} />
       </Plane>
       <Clouds />
-      <Rain2 />
+      <Rain2 rainCount={rainCount} />
       <Effects />
+      <PerformanceMonitor
+        onDecline={() => setRainCount(2000)}
+        onIncline={() => setRainCount(4000)}
+      />
+      <Perf position="top-left" />
     </Canvas>
   );
 };
