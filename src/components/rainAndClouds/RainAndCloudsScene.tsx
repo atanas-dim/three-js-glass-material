@@ -14,7 +14,7 @@ const RainAndCloudsScene: FC = () => {
       <pointLight position={[30, 30, 20]} intensity={2000} castShadow />
 
       <Plane args={[15, 15]} rotation={[-Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="grey" />
+        <meshStandardMaterial color="lightyellow" />
       </Plane>
 
       <Clouds />

@@ -8,15 +8,27 @@ const Clouds = () => {
   const flashLightRef = useRef<THREE.PointLight>(null);
   const flashIntensity = useRef(0);
 
-  const minFlashIntensity = 4000;
-  const maxFlashIntensity = 6000;
+  const minFlashIntensity = 1000;
+  const maxFlashIntensity = 3000;
+
+  // const flashTimeoutRef = useRef<number | null>(null);
+  const isFlashing = useRef(false);
 
   useFrame(() => {
-    if (Math.random() > 0.9875) {
+    if (isFlashing.current) return;
+
+    if (Math.random() > 0.99) {
+      isFlashing.current = true;
       flashIntensity.current = THREE.MathUtils.randFloat(
         minFlashIntensity,
         maxFlashIntensity
       );
+
+      const timeout = THREE.MathUtils.randInt(200, 500);
+      const flashTimeout = setTimeout(() => {
+        isFlashing.current = false;
+        clearTimeout(flashTimeout);
+      }, timeout);
     } else {
       flashIntensity.current = 0;
     }
@@ -31,7 +43,7 @@ const Clouds = () => {
       <pointLight
         ref={flashLightRef}
         position={[0, 14, 0]}
-        color="white"
+        color="lightyellow"
         intensity={0}
         distance={50}
       />

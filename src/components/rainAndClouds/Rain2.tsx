@@ -6,7 +6,7 @@ import { useFrame } from "@react-three/fiber";
 
 export const Effects = () => (
   <EffectComposer>
-    <Bloom luminanceThreshold={0.02} luminanceSmoothing={0.5} intensity={1.5} />
+    <Bloom luminanceThreshold={0.01} luminanceSmoothing={0.5} intensity={1} />
   </EffectComposer>
 );
 
