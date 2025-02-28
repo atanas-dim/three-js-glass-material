@@ -11,20 +11,19 @@ const Clouds = () => {
   const minFlashIntensity = 1000;
   const maxFlashIntensity = 3000;
 
-  // const flashTimeoutRef = useRef<number | null>(null);
   const isFlashing = useRef(false);
 
   useFrame(() => {
     if (isFlashing.current) return;
 
-    if (Math.random() > 0.99) {
+    if (Math.random() > 0.9985) {
       isFlashing.current = true;
       flashIntensity.current = THREE.MathUtils.randFloat(
         minFlashIntensity,
         maxFlashIntensity
       );
 
-      const timeout = THREE.MathUtils.randInt(200, 500);
+      const timeout = THREE.MathUtils.randInt(400, 800);
       const flashTimeout = setTimeout(() => {
         isFlashing.current = false;
         clearTimeout(flashTimeout);
@@ -48,7 +47,7 @@ const Clouds = () => {
         distance={50}
       />
 
-      <Cloud position={[0, 17, 0]} scale={[2.5, 2, 2.8]} />
+      <Cloud position={[0, 17, 0]} scale={[2.5, 2, 2.8]} color="#d8edf8" />
     </>
   );
 };

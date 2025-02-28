@@ -7,19 +7,16 @@ import Clouds from "./Clouds";
 const RainAndCloudsScene: FC = () => {
   return (
     <Canvas dpr={[2, 3]} gl={{}} shadows={false}>
-      <OrbitControls />
+      <OrbitControls target={[0, 8, 0]} enableZoom={true} />
       <ambientLight intensity={0.5} />
-      <PerspectiveCamera makeDefault position={[0, 10, 30]} fov={50} />
+      <PerspectiveCamera makeDefault position={[0, 2, 18]} fov={65} />
       <color attach="background" args={["#252e3c"]} />
-      <pointLight position={[30, 30, 20]} intensity={2000} castShadow />
-
+      <pointLight position={[20, 25, 25]} intensity={2000} castShadow />
       <Plane args={[15, 15]} rotation={[-Math.PI / 2, 0, 0]}>
-        <meshStandardMaterial color="lightyellow" />
+        <meshStandardMaterial color="lightgrey" roughness={1} />
       </Plane>
-
       <Clouds />
       <Rain2 />
-
       <Effects />
     </Canvas>
   );

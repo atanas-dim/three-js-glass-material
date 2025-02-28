@@ -12,7 +12,7 @@ export const Effects = () => (
 
 const Rain2 = () => {
   const rainCount = 5000;
-  const rainCubeSize = 15; // X size of the rain box
+  const rainCubeSize = 12; // X size of the rain box
 
   const meshRef = useRef<THREE.InstancedMesh>(null!);
 
@@ -65,13 +65,13 @@ const Rain2 = () => {
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, rainCount]}>
-      <cylinderGeometry args={[0.001, 0.01, 0.15, 3]} />
+      <cylinderGeometry args={[0.001, 0.003, 0.15, 3]} />
       <meshLambertMaterial
         color="white"
-        emissive="blue"
-        emissiveIntensity={0.05}
+        emissive="lightblue"
+        emissiveIntensity={0.95}
         transparent
-        opacity={0.2}
+        opacity={0.6}
       />
     </instancedMesh>
   );
